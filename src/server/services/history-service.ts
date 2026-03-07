@@ -1,6 +1,13 @@
 import path from 'node:path';
-import type { AppSettings, SessionDetail, SessionsResponse, SettingsResponse } from '../../shared/types.js';
+import type {
+  AppSettings,
+  ExportResponse,
+  SessionDetail,
+  SessionsResponse,
+  SettingsResponse,
+} from '../../shared/types.js';
 import { loadSettings, saveSettings } from '../config.js';
+import { exportSessionDetail } from '../exporter.js';
 import { parseSessionFile } from '../history/parser.js';
 import { scanSessionFiles } from '../history/scanner.js';
 import { HistoryRepository } from '../index/repository.js';
@@ -21,6 +28,19 @@ export class ConfigurationError extends Error {
     super(message);
     this.name = 'ConfigurationError';
   }
+}
+
+function normalizeDateBoundary(value: string | undefined, endOfDay: boolean) {
+  if (!value) {
+    return undefined;
+  }
+
+  const plainDatePattern = /^\d{4}-\d{2}-\d{2}$/;
+  if (!plainDatePattern.test(value)) {
+    return value;
+  }
+
+  return endOfDay ? `${value}T23:59:59.999Z` : `${value}T00:00:00.000Z`;
 }
 
 function openRepository(settings: AppSettings) {
@@ -142,8 +162,8 @@ export function listSessions(options: ListSessionOptions): SessionsResponse {
       q: options.q,
       cwd: options.cwd,
       source: options.source,
-      from: options.from,
-      to: options.to,
+      from: normalizeDateBoundary(options.from, false),
+      to: normalizeDateBoundary(options.to, true),
       page: options.page ?? 1,
       pageSize: options.pageSize ?? 50,
     });
@@ -175,6 +195,36 @@ export function getDiagnostics() {
   const { repository } = openRepository(settings);
   try {
     return repository.getDiagnostics();
+  } finally {
+    repository.close();
+  }
+}
+
+export function exportSession(
+  sessionId: string,
+  format: 'markdown' | 'html',
+  targetPath?: string,
+): ExportResponse {
+  const settings = loadSettings();
+  const { repository, storagePaths } = openRepository(settings);
+
+  try {
+    const detail = repository.getSessionDetail(sessionId);
+    if (!detail) {
+      throw new ConfigurationError('未找到对应会话');
+    }
+
+    const defaultExtension = format === 'markdown' ? 'md' : 'html';
+    const resolvedPath =
+      targetPath && targetPath.trim()
+        ? path.isAbsolute(targetPath)
+          ? targetPath
+          : (() => {
+              throw new ConfigurationError('导出路径必须是绝对路径');
+            })()
+        : path.join(storagePaths.exportPath ?? settings.dataDir ?? process.cwd(), `${sessionId}.${defaultExtension}`);
+
+    return exportSessionDetail(detail, resolvedPath, format);
   } finally {
     repository.close();
   }

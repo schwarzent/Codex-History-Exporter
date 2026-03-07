@@ -26,6 +26,10 @@ function createTempLayout() {
     path.resolve('tests/fixtures/sample-session.jsonl'),
     path.join(sessionDir, 'rollout-2026-03-07T02-00-00-session-123.jsonl'),
   );
+  fs.copyFileSync(
+    path.resolve('tests/fixtures/invalid-session.jsonl'),
+    path.join(sessionDir, 'rollout-2026-03-07T02-10-00-broken-session.jsonl'),
+  );
 
   return {
     rootDir,
@@ -66,7 +70,8 @@ describe('history api', () => {
       .send({ dataDir: testPaths.dataDir });
     expect(configured.status).toBe(200);
     expect(configured.body.settings.dataDir).toBe(testPaths.dataDir);
-    expect(configured.body.storage.sessionCount).toBe(1);
+    expect(configured.body.storage.sessionCount).toBe(2);
+    expect(configured.body.storage.errorCount).toBe(1);
 
     const sessions = await request(app).get('/api/sessions').query({ q: '查看历史记录' });
     expect(sessions.status).toBe(200);
@@ -80,6 +85,13 @@ describe('history api', () => {
 
     const diagnostics = await request(app).get('/api/diagnostics');
     expect(diagnostics.status).toBe(200);
-    expect(diagnostics.body.items).toHaveLength(0);
+    expect(diagnostics.body.items).toHaveLength(1);
+
+    const exported = await request(app)
+      .post('/api/sessions/session-123/export')
+      .send({ format: 'markdown' });
+    expect(exported.status).toBe(200);
+    expect(exported.body.filePath).toContain('session-123.md');
+    expect(fs.existsSync(exported.body.filePath)).toBe(true);
   });
 });

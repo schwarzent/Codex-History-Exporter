@@ -64,6 +64,7 @@ pre {
 
 .topbar,
 .filters,
+.utility-grid,
 .layout {
   width: min(1400px, 100%);
   margin: 0 auto;
@@ -84,8 +85,14 @@ pre {
 
 .filters {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 12px;
+}
+
+.utility-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
 }
 
 .layout {
@@ -111,6 +118,11 @@ pre {
 .panel {
   padding: 16px;
   overflow: hidden;
+}
+
+.utility-panel {
+  display: grid;
+  gap: 16px;
 }
 
 .panel-header,
@@ -187,9 +199,38 @@ pre {
   border-left: 4px solid #a78bfa;
 }
 
+.diagnostic-list,
+.utility-form,
+.stats-grid,
+.session-diagnostics {
+  display: grid;
+  gap: 12px;
+}
+
+.diagnostic-item {
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(239, 68, 68, 0.12);
+}
+
 .field {
   display: grid;
   gap: 8px;
+}
+
+.button-row,
+.export-form {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.export-form {
+  flex-wrap: wrap;
+}
+
+.export-target {
+  flex: 1 1 320px;
 }
 
 .primary-button,
@@ -257,6 +298,14 @@ pre {
   border-radius: 12px;
 }
 
+.success-banner {
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  color: #bbf7d0;
+  background: rgba(34, 197, 94, 0.16);
+}
+
 .raw-view {
   padding: 16px;
   border-radius: 14px;
@@ -266,6 +315,7 @@ pre {
 
 @media (max-width: 1080px) {
   .filters,
+  .utility-grid,
   .layout {
     grid-template-columns: 1fr;
   }

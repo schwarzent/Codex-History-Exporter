@@ -1,4 +1,6 @@
 import type {
+  DiagnosticsResponse,
+  ExportResponse,
   SessionDetail,
   SessionsResponse,
   SettingsResponse,
@@ -66,4 +68,25 @@ export function listSessions(filters: SessionFilters) {
 
 export function getSessionDetail(sessionId: string) {
   return fetchJson<SessionDetail>(`/api/sessions/${sessionId}`);
+}
+
+export function rebuildIndex() {
+  return fetchJson<{ storage: SettingsResponse['storage'] }>('/api/index/rebuild', {
+    method: 'POST',
+  });
+}
+
+export function getDiagnostics() {
+  return fetchJson<DiagnosticsResponse>('/api/diagnostics');
+}
+
+export function exportSession(
+  sessionId: string,
+  format: 'markdown' | 'html',
+  targetPath?: string,
+) {
+  return fetchJson<ExportResponse>(`/api/sessions/${sessionId}/export`, {
+    method: 'POST',
+    body: JSON.stringify({ format, targetPath }),
+  });
 }

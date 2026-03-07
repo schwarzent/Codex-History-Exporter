@@ -1,11 +1,18 @@
-import { useMemo, useState } from 'react';
-import type { SessionDetail, TimelineItem } from '../../shared/types';
+import { FormEvent, useMemo, useState } from 'react';
+import type { ExportResponse, SessionDetail, TimelineItem } from '../../shared/types';
 
 type DetailTab = 'timeline' | 'raw';
 
 interface SessionDetailProps {
   detail: SessionDetail | null;
+  exportBusy: boolean;
+  exportResult: ExportResponse | null;
   loading: boolean;
+  onExport: (
+    sessionId: string,
+    format: 'markdown' | 'html',
+    targetPath?: string,
+  ) => Promise<void>;
 }
 
 function renderTimestamp(value: string | null) {
@@ -24,6 +31,8 @@ function timelineClassName(item: TimelineItem) {
 
 export function SessionDetailView(props: SessionDetailProps) {
   const [tab, setTab] = useState<DetailTab>('timeline');
+  const [format, setFormat] = useState<'markdown' | 'html'>('markdown');
+  const [targetPath, setTargetPath] = useState('');
 
   const rawJson = useMemo(() => {
     if (!props.detail) {
@@ -57,12 +66,19 @@ export function SessionDetailView(props: SessionDetailProps) {
     );
   }
 
+  const detail = props.detail;
+
+  async function handleExport(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    await props.onExport(detail.summary.id, format, targetPath.trim() || undefined);
+  }
+
   return (
     <section className="panel detail-panel">
       <div className="panel-header detail-header">
         <div>
-          <h2>{props.detail.summary.title}</h2>
-          <p className="muted">{props.detail.summary.cwd ?? '未知工作目录'}</p>
+          <h2>{detail.summary.title}</h2>
+          <p className="muted">{detail.summary.cwd ?? '未知工作目录'}</p>
         </div>
         <div className="segmented-control">
           <button
@@ -82,9 +98,48 @@ export function SessionDetailView(props: SessionDetailProps) {
         </div>
       </div>
 
+      <form className="export-form" onSubmit={handleExport}>
+        <label className="field">
+          <span>导出格式</span>
+          <select
+            value={format}
+            onChange={(event) => setFormat(event.target.value as 'markdown' | 'html')}
+          >
+            <option value="markdown">Markdown</option>
+            <option value="html">HTML</option>
+          </select>
+        </label>
+        <label className="field export-target">
+          <span>目标路径（可选）</span>
+          <input
+            placeholder="留空则写入数据目录 exports/"
+            value={targetPath}
+            onChange={(event) => setTargetPath(event.target.value)}
+          />
+        </label>
+        <button className="secondary-button" disabled={props.exportBusy} type="submit">
+          {props.exportBusy ? '导出中…' : '导出当前会话'}
+        </button>
+      </form>
+
+      {props.exportResult ? (
+        <p className="success-banner">已导出到：{props.exportResult.filePath}</p>
+      ) : null}
+
+      {detail.diagnostics.length > 0 ? (
+        <div className="session-diagnostics">
+          <strong>当前会话诊断</strong>
+          {detail.diagnostics.map((item) => (
+            <p key={`${item.filePath}-${item.lineNumber ?? 'na'}`}>
+              {item.filePath} · 行 {item.lineNumber ?? '未知'} · {item.message}
+            </p>
+          ))}
+        </div>
+      ) : null}
+
       {tab === 'timeline' ? (
         <div className="timeline">
-          {props.detail.timeline.map((item) => (
+          {detail.timeline.map((item) => (
             <article key={`${item.seq}-${item.title}`} className={timelineClassName(item)}>
               <div className="timeline-meta">
                 <span>{item.title}</span>

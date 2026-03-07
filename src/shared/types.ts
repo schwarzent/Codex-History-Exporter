@@ -79,3 +79,8 @@ export interface SettingsResponse {
   settings: AppSettings;
   storage: StorageStats;
 }
+
+export interface ExportResponse {
+  filePath: string;
+  format: 'markdown' | 'html';
+}

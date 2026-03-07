@@ -2,6 +2,7 @@ import express from 'express';
 import {
   ConfigurationError,
   getDiagnostics,
+  exportSession,
   getSessionDetail,
   getSettings,
   listSessions,
@@ -83,6 +84,26 @@ export function createApp() {
       }
 
       response.json(detail);
+    } catch (error) {
+      next(error);
+    }
+  });
+
+  app.post('/api/sessions/:sessionId/export', (request, response, next) => {
+    try {
+      const body = request.body as { format?: unknown; targetPath?: unknown };
+      if (body.format !== 'markdown' && body.format !== 'html') {
+        response.status(400).json({ message: 'format 必须是 markdown 或 html' });
+        return;
+      }
+
+      response.json(
+        exportSession(
+          request.params.sessionId,
+          body.format,
+          typeof body.targetPath === 'string' ? body.targetPath : undefined,
+        ),
+      );
     } catch (error) {
       next(error);
     }

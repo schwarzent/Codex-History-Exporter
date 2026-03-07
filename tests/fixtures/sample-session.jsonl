@@ -1,0 +1,9 @@
+{"timestamp":"2026-03-07T02:00:00.000Z","type":"session_meta","payload":{"id":"session-123","timestamp":"2026-03-07T02:00:00.000Z","cwd":"D:\\dev\\Codex-History-Exporter","originator":"codex_cli_rs","cli_version":"0.107.0"}}
+{"timestamp":"2026-03-07T02:00:01.000Z","type":"turn_context","payload":{"turn_id":"turn-1","cwd":"D:\\dev\\Codex-History-Exporter","current_date":"2026-03-07","timezone":"Asia/Shanghai"}}
+{"timestamp":"2026-03-07T02:00:02.000Z","type":"event_msg","payload":{"type":"user_message","message":"帮我做一个查看历史记录的项目","images":[],"local_images":[],"text_elements":[]}}
+{"timestamp":"2026-03-07T02:00:03.000Z","type":"event_msg","payload":{"type":"agent_message","message":"先确认本地目录结构。","phase":"commentary"}}
+{"timestamp":"2026-03-07T02:00:04.000Z","type":"event_msg","payload":{"type":"agent_reasoning","text":"我需要先确认 JSONL 结构，再决定解析器模型。"}}
+{"timestamp":"2026-03-07T02:00:05.000Z","type":"response_item","payload":{"type":"message","role":"assistant","content":[{"type":"output_text","text":"已确认 sessions 与 archived_sessions 存在。"}]}}
+{"timestamp":"2026-03-07T02:00:06.000Z","type":"response_item","payload":{"type":"function_call","name":"exec_command","arguments":"{\"cmd\":\"Get-ChildItem\"}","call_id":"call-1"}}
+{"timestamp":"2026-03-07T02:00:07.000Z","type":"response_item","payload":{"type":"function_call_output","call_id":"call-1","output":"sample output"}}
+{"timestamp":"2026-03-07T02:00:08.000Z","type":"response_item","payload":{"type":"reasoning","summary":["确认数据源稳定"],"content":null,"encrypted_content":"secret"}}

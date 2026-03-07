@@ -92,8 +92,12 @@ export function createApp() {
   app.post('/api/sessions/:sessionId/export', (request, response, next) => {
     try {
       const body = request.body as { format?: unknown; targetPath?: unknown };
-      if (body.format !== 'markdown' && body.format !== 'html') {
-        response.status(400).json({ message: 'format 必须是 markdown 或 html' });
+      if (
+        body.format !== 'markdown' &&
+        body.format !== 'html' &&
+        body.format !== 'messageonly'
+      ) {
+        response.status(400).json({ message: 'format 必须是 markdown、html 或 messageonly' });
         return;
       }
 

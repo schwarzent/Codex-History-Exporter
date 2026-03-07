@@ -24,13 +24,14 @@ describe('parseSessionFile', () => {
     expect(parsed.summary.cliVersion).toBe('0.107.0');
     expect(parsed.summary.cwd).toBe('D:\\dev\\Codex-History-Exporter');
     expect(parsed.summary.title).toContain('帮我做一个查看历史记录的项目');
-    expect(parsed.timeline).toHaveLength(7);
+    expect(parsed.timeline).toHaveLength(8);
     expect(parsed.timeline[0]?.kind).toBe('user_message');
     expect(parsed.timeline[2]?.kind).toBe('assistant_reasoning');
     expect(parsed.timeline[3]?.kind).toBe('assistant_message');
-    expect(parsed.timeline[4]?.kind).toBe('tool_call');
-    expect(parsed.timeline[5]?.kind).toBe('tool_output');
-    expect(parsed.timeline[6]?.kind).toBe('assistant_reasoning');
+    expect(parsed.timeline[4]?.kind).toBe('developer_message');
+    expect(parsed.timeline[5]?.kind).toBe('tool_call');
+    expect(parsed.timeline[6]?.kind).toBe('tool_output');
+    expect(parsed.timeline[7]?.kind).toBe('assistant_reasoning');
     expect(parsed.diagnostics).toHaveLength(0);
   });
 

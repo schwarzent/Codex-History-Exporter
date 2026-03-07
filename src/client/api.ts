@@ -82,7 +82,7 @@ export function getDiagnostics() {
 
 export function exportSession(
   sessionId: string,
-  format: 'markdown' | 'html',
+  format: 'markdown' | 'html' | 'messageonly',
   targetPath?: string,
 ) {
   return fetchJson<ExportResponse>(`/api/sessions/${sessionId}/export`, {

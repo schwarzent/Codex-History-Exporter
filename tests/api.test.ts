@@ -80,7 +80,7 @@ describe('history api', () => {
 
     const detail = await request(app).get('/api/sessions/session-123');
     expect(detail.status).toBe(200);
-    expect(detail.body.timeline).toHaveLength(7);
+    expect(detail.body.timeline).toHaveLength(8);
     expect(detail.body.rawFilePath).toContain('rollout-2026-03-07T02-00-00-session-123.jsonl');
 
     const diagnostics = await request(app).get('/api/diagnostics');
@@ -93,5 +93,17 @@ describe('history api', () => {
     expect(exported.status).toBe(200);
     expect(exported.body.filePath).toContain('session-123.md');
     expect(fs.existsSync(exported.body.filePath)).toBe(true);
+
+    const messageOnlyExport = await request(app)
+      .post('/api/sessions/session-123/export')
+      .send({ format: 'messageonly' });
+    expect(messageOnlyExport.status).toBe(200);
+    expect(messageOnlyExport.body.filePath).toContain('session-123.messageonly.md');
+    const exportedContent = fs.readFileSync(messageOnlyExport.body.filePath, 'utf8');
+    expect(exportedContent).toContain('## User');
+    expect(exportedContent).toContain('## Codex');
+    expect(exportedContent).not.toContain('工具调用');
+    expect(exportedContent).not.toContain('开发者提示');
+    expect(exportedContent).not.toContain('模型推理');
   });
 });

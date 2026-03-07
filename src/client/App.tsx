@@ -147,7 +147,7 @@ export function App() {
 
   async function handleExport(
     sessionId: string,
-    format: 'markdown' | 'html',
+    format: 'markdown' | 'html' | 'messageonly',
     targetPath?: string,
   ) {
     setExportBusy(true);

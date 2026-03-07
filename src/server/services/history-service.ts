@@ -202,7 +202,7 @@ export function getDiagnostics() {
 
 export function exportSession(
   sessionId: string,
-  format: 'markdown' | 'html',
+  format: 'markdown' | 'html' | 'messageonly',
   targetPath?: string,
 ): ExportResponse {
   const settings = loadSettings();
@@ -214,7 +214,8 @@ export function exportSession(
       throw new ConfigurationError('未找到对应会话');
     }
 
-    const defaultExtension = format === 'markdown' ? 'md' : 'html';
+    const defaultExtension = format === 'html' ? 'html' : 'md';
+    const defaultFileName = format === 'messageonly' ? `${sessionId}.messageonly.md` : `${sessionId}.${defaultExtension}`;
     const resolvedPath =
       targetPath && targetPath.trim()
         ? path.isAbsolute(targetPath)
@@ -222,7 +223,7 @@ export function exportSession(
           : (() => {
               throw new ConfigurationError('导出路径必须是绝对路径');
             })()
-        : path.join(storagePaths.exportPath ?? settings.dataDir ?? process.cwd(), `${sessionId}.${defaultExtension}`);
+        : path.join(storagePaths.exportPath ?? settings.dataDir ?? process.cwd(), defaultFileName);
 
     return exportSessionDetail(detail, resolvedPath, format);
   } finally {

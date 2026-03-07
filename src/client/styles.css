@@ -100,6 +100,7 @@ pre {
   grid-template-columns: 380px minmax(0, 1fr);
   gap: 16px;
   min-height: calc(100vh - 190px);
+  align-items: start;
 }
 
 .card,
@@ -138,16 +139,29 @@ pre {
 .detail-panel {
   display: grid;
   gap: 16px;
+  min-height: 0;
 }
 
 .session-list,
 .timeline {
-  display: grid;
+  min-height: 0;
   gap: 12px;
   overflow: auto;
 }
 
+.session-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline {
+  display: grid;
+  align-content: start;
+}
+
 .session-item {
+  width: 100%;
+  flex: 0 0 auto;
   text-align: left;
   padding: 14px;
   border-radius: 14px;

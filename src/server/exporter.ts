@@ -2,7 +2,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import type { ExportResponse, SessionDetail } from '../shared/types.js';
 
-type ExportFormat = 'markdown' | 'html';
+type ExportFormat = 'markdown' | 'html' | 'messageonly';
+
+function isMessageOnlyItem(detailKind: SessionDetail['timeline'][number]['kind']) {
+  return detailKind === 'user_message' || detailKind === 'assistant_message';
+}
 
 function escapeHtml(value: string) {
   return value
@@ -35,6 +39,34 @@ function renderMarkdown(detail: SessionDetail) {
     }
     lines.push('');
   });
+
+  return lines.join('\n');
+}
+
+function renderMessageOnlyMarkdown(detail: SessionDetail) {
+  const lines = [
+    `# ${detail.summary.title}`,
+    '',
+    `- 会话 ID：\`${detail.summary.id}\``,
+    `- 工作目录：\`${detail.summary.cwd ?? '未知'}\``,
+    `- 原始文件：\`${detail.rawFilePath}\``,
+    `- 导出模式：\`messageonly\``,
+    '',
+  ];
+
+  detail.timeline
+    .filter((item) => isMessageOnlyItem(item.kind))
+    .forEach((item) => {
+      const speaker = item.kind === 'user_message' ? 'User' : 'Codex';
+      lines.push(`## ${speaker}`);
+      lines.push('');
+      lines.push(`- 时间：${item.timestamp ?? '无时间戳'}`);
+      if (item.textContent) {
+        lines.push('');
+        lines.push(item.textContent);
+      }
+      lines.push('');
+    });
 
   return lines.join('\n');
 }
@@ -90,7 +122,12 @@ export function exportSessionDetail(
 ): ExportResponse {
   const dirname = path.dirname(exportPath);
   fs.mkdirSync(dirname, { recursive: true });
-  const content = format === 'markdown' ? renderMarkdown(detail) : renderHtml(detail);
+  const content =
+    format === 'markdown'
+      ? renderMarkdown(detail)
+      : format === 'messageonly'
+        ? renderMessageOnlyMarkdown(detail)
+        : renderHtml(detail);
   fs.writeFileSync(exportPath, content, 'utf8');
 
   return {

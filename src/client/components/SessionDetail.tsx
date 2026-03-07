@@ -10,7 +10,7 @@ interface SessionDetailProps {
   loading: boolean;
   onExport: (
     sessionId: string,
-    format: 'markdown' | 'html',
+    format: 'markdown' | 'html' | 'messageonly',
     targetPath?: string,
   ) => Promise<void>;
 }
@@ -31,7 +31,7 @@ function timelineClassName(item: TimelineItem) {
 
 export function SessionDetailView(props: SessionDetailProps) {
   const [tab, setTab] = useState<DetailTab>('timeline');
-  const [format, setFormat] = useState<'markdown' | 'html'>('markdown');
+  const [format, setFormat] = useState<'markdown' | 'html' | 'messageonly'>('markdown');
   const [targetPath, setTargetPath] = useState('');
 
   const rawJson = useMemo(() => {
@@ -103,10 +103,13 @@ export function SessionDetailView(props: SessionDetailProps) {
           <span>导出格式</span>
           <select
             value={format}
-            onChange={(event) => setFormat(event.target.value as 'markdown' | 'html')}
+            onChange={(event) =>
+              setFormat(event.target.value as 'markdown' | 'html' | 'messageonly')
+            }
           >
             <option value="markdown">Markdown</option>
             <option value="html">HTML</option>
+            <option value="messageonly">MessageOnly Markdown</option>
           </select>
         </label>
         <label className="field export-target">

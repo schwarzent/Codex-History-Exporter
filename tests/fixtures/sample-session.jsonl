@@ -4,6 +4,7 @@
 {"timestamp":"2026-03-07T02:00:03.000Z","type":"event_msg","payload":{"type":"agent_message","message":"先确认本地目录结构。","phase":"commentary"}}
 {"timestamp":"2026-03-07T02:00:04.000Z","type":"event_msg","payload":{"type":"agent_reasoning","text":"我需要先确认 JSONL 结构，再决定解析器模型。"}}
 {"timestamp":"2026-03-07T02:00:05.000Z","type":"response_item","payload":{"type":"message","role":"assistant","content":[{"type":"output_text","text":"已确认 sessions 与 archived_sessions 存在。"}]}}
+{"timestamp":"2026-03-07T02:00:05.500Z","type":"response_item","payload":{"type":"message","role":"developer","content":[{"type":"input_text","text":"开发者提示：禁止修改工作目录外文件。"}]}}
 {"timestamp":"2026-03-07T02:00:06.000Z","type":"response_item","payload":{"type":"function_call","name":"exec_command","arguments":"{\"cmd\":\"Get-ChildItem\"}","call_id":"call-1"}}
 {"timestamp":"2026-03-07T02:00:07.000Z","type":"response_item","payload":{"type":"function_call_output","call_id":"call-1","output":"sample output"}}
 {"timestamp":"2026-03-07T02:00:08.000Z","type":"response_item","payload":{"type":"reasoning","summary":["确认数据源稳定"],"content":null,"encrypted_content":"secret"}}

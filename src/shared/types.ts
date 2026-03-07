@@ -82,5 +82,5 @@ export interface SettingsResponse {
 
 export interface ExportResponse {
   filePath: string;
-  format: 'markdown' | 'html';
+  format: 'markdown' | 'html' | 'messageonly';
 }

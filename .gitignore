@@ -1,0 +1,8 @@
+node_modules/
+dist/
+coverage/
+config.local.json
+*.log
+*.sqlite-shm
+*.sqlite-wal
+Codex History Viewer TO DO list.csv

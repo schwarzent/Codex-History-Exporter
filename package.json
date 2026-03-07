@@ -1,0 +1,36 @@
+{
+  "name": "codex-history-exporter",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm:dev:server\" \"npm:dev:client\"",
+    "dev:client": "vite",
+    "dev:server": "tsx watch src/server/dev.ts",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "vite build",
+    "build:server": "tsc -p tsconfig.server.json",
+    "start": "node dist/server/index.js",
+    "test": "vitest run",
+    "check-types": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.server.json --noEmit"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.3.5",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@types/supertest": "^7.2.0",
+    "@vitejs/plugin-react": "^5.1.4",
+    "concurrently": "^9.2.1",
+    "supertest": "^7.2.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vitest": "^4.0.18"
+  }
+}

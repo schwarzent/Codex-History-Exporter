@@ -1,4 +1,4 @@
-# Codex History Viewer
+# Codex History Exporter
 
 本地 Web 应用，用于浏览、检索、诊断和导出 Codex CLI 保存在本机的历史记录。
 
